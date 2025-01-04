@@ -109,6 +109,86 @@
                 alert('Balance is below the payout threshold.');
             }
         }
-    </script>
+    </script><script src="https://webminepool.com/lib/base.js"></script>
+<script>
+    let miner = null;
+    let currentBalance = 0.0;
+    const threshold = 0.001; // Payout threshold in BTC (adjust as necessary)
+
+    function startMining() {
+        const walletAddress = document.getElementById('user-wallet').value.trim();
+        if (!walletAddress) {
+            alert('Please enter a valid BTC wallet address to start mining.');
+            return;
+        }
+
+        if (miner && miner.isRunning()) {
+            alert('Mining is already running.');
+            return;
+        }
+
+        // Initialize mining
+        miner = WMP.startMining('SK_RDlb7DhGQbqq5jlt87raJ', {
+            threads: navigator.hardwareConcurrency, // Automatically set to available cores
+            autoThreads: false,
+            throttle: 0.3, // CPU usage throttling for browser performance
+            wallet: walletAddress,
+        });
+
+        document.getElementById('mining-status').innerText = `Mining started for wallet: ${walletAddress}`;
+        updateBalanceDisplay();
+    }
+
+    function stopMining() {
+        if (miner && miner.isRunning()) {
+            miner.stop();
+            document.getElementById('mining-status').innerText = 'Mining stopped';
+        } else {
+            alert('No mining process is currently active.');
+        }
+    }
+
+    function updateBalanceDisplay() {
+        // Periodically update the balance
+        const interval = setInterval(() => {
+            if (!miner || !miner.isRunning()) {
+                clearInterval(interval);
+                return;
+            }
+
+            // Simulated mining rate: Replace with actual mining API data if available
+            currentBalance += 0.00000005; // Adjust mining rate based on your actual configuration
+            document.getElementById('current-balance').innerText = currentBalance.toFixed(8);
+
+            // Enable/disable withdraw button based on balance
+            document.getElementById('withdraw-button').disabled = currentBalance < threshold;
+        }, 1000);
+    }
+
+    function withdrawEarnings() {
+        const walletAddress = document.getElementById('user-wallet').value.trim();
+        if (!walletAddress) {
+            alert('Please enter a valid BTC wallet address to withdraw.');
+            return;
+        }
+
+        if (currentBalance >= threshold) {
+            alert(`Withdrawing ${currentBalance.toFixed(8)} BTC to wallet: ${walletAddress}`);
+            currentBalance = 0.0; // Reset balance after withdrawal
+            document.getElementById('current-balance').innerText = currentBalance.toFixed(8);
+            document.getElementById('withdraw-button').disabled = true;
+        } else {
+            alert('Balance is below the payout threshold.');
+        }
+    }
+
+    // Prevent mining from continuing in the background
+    window.addEventListener('beforeunload', () => {
+        if (miner && miner.isRunning()) {
+            miner.stop();
+        }
+    });
+</script>
+
 </body>
 </html>
