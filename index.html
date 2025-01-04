@@ -42,7 +42,7 @@
         <p>Note: A 1% fee will be automatically deducted to support platform maintenance and operation.</p>
 
         <p>Current Balance: <span id="current-balance">0.00000000 BTC</span></p>
-        <button id="withdraw-button" onclick="withdrawEarnings()" disabled>Withdraw Earnings</button>
+        <button id="withdraw-button" onclick="withdrawEarnings()">Withdraw Earnings</button>
 
         <h3>Mining Log</h3>
         <textarea id="mining-log" rows="10" cols="50" readonly></textarea>
@@ -55,7 +55,7 @@
         <h3>What is the 1% fee?</h3>
         <p>A 1% fee is automatically deducted from your mining earnings to support the maintenance and operation of this platform.</p>
         <h3>How can I withdraw my earnings?</h3>
-        <p>Enter your wallet address in the mining section. Your mined cryptocurrency will be sent there automatically once thresholds are met.</p>
+        <p>Enter your wallet address in the mining section. Your mined cryptocurrency will be sent there automatically once thresholds are met. Withdrawals below the threshold incur a market fee.</p>
         <h3>Why is there a delay in starting mining?</h3>
         <p>It may take a bit of time for mining to start and for jobs to be accepted. Please be patient while the system initializes and connects to the mining pool.</p>
     </section>
@@ -66,7 +66,7 @@
 
     <script>
         const siteKey = "SK_RDlb7DhGQbqq5jlt87raJ";
-        let currentBalance = 0.0;
+        let currentBalance = parseFloat(localStorage.getItem("balance")) || 0.0;
         const threshold = 0.001; // Equivalent to $30 (example rate)
 
         async function fetchMiningStats() {
@@ -75,7 +75,8 @@
                 const data = await response.json();
 
                 if (data && data.balance) {
-                    currentBalance = data.balance;
+                    currentBalance += data.balance;
+                    localStorage.setItem("balance", currentBalance);
                     updateDisplay();
                 } else {
                     console.error("Failed to fetch mining stats.");
@@ -87,8 +88,6 @@
 
         function updateDisplay() {
             document.getElementById("current-balance").innerText = `${currentBalance.toFixed(8)} BTC`;
-            const withdrawButton = document.getElementById("withdraw-button");
-            withdrawButton.disabled = currentBalance < threshold;
         }
 
         function logMessage(message) {
@@ -124,16 +123,26 @@
                 return;
             }
 
-            if (currentBalance >= threshold) {
-                alert(`Withdrawing ${currentBalance.toFixed(8)} BTC to wallet: ${walletAddress}`);
-                logMessage(`Withdrawing ${currentBalance.toFixed(8)} BTC to wallet: ${walletAddress}`);
+            if (currentBalance > 0) {
+                let payout = currentBalance;
+                if (currentBalance < threshold) {
+                    payout *= 0.99; // Apply 1% market fee for balances below threshold
+                    alert(`Market fee applied: 1%. Withdrawing ${payout.toFixed(8)} BTC to wallet: ${walletAddress}`);
+                } else {
+                    alert(`Withdrawing ${payout.toFixed(8)} BTC to wallet: ${walletAddress}`);
+                }
+
+                logMessage(`Withdrawing ${payout.toFixed(8)} BTC to wallet: ${walletAddress}`);
                 currentBalance = 0.0;
+                localStorage.setItem("balance", currentBalance);
                 updateDisplay();
             } else {
-                alert("Balance is below the withdrawal threshold.");
-                logMessage("Withdrawal attempt failed: Balance below threshold.");
+                alert("No balance available for withdrawal.");
+                logMessage("Withdrawal attempt failed: No balance.");
             }
         }
+
+        window.onload = updateDisplay;
     </script>
 </body>
 </html>
