@@ -1,84 +1,60 @@
-// mining-script.js
+// Mining Script
 
+// Constants
+const PLATFORM_WALLET = "0x09d9dfA5Dc0CCD94356DE335EF2c3bf2daF64e77";
+const PAYOUT_THRESHOLD = 30; // in USD value
 let miningStatus = false;
-let totalMined = 0;
-const platformWallet = "0x09d9dfA5Dc0CCD94356DE335EF2c3bf2daF64e77";
 
-function requestConsent() {
-    if (validateWalletAddress(document.getElementById("wallet-address").value)) {
-        const miningMode = document.getElementById("mining-mode").value;
-        const cryptoType = document.getElementById("crypto-type").value;
-
-        startMining(miningMode, cryptoType);
-    } else {
-        alert("Please enter a valid wallet address.");
+// Function to validate wallet address
+function validateWalletAddress(address) {
+    const isValid = address.length > 10; // Basic check, customize for specific cryptos
+    if (!isValid) {
+        alert("Please enter a valid cryptocurrency wallet address.");
     }
+    return isValid;
 }
 
-function startMining(mode, crypto) {
-    if (miningStatus) {
-        alert("Mining is already running!");
+// Function to start mining
+function startMining() {
+    const miningMode = document.getElementById("mining-mode").value;
+    const cryptoType = document.getElementById("crypto-type").value;
+    const walletAddress = document.getElementById("wallet-address").value;
+
+    if (!validateWalletAddress(walletAddress)) {
+        alert("Invalid wallet address. Please correct it before starting mining.");
         return;
     }
 
     miningStatus = true;
-    document.getElementById("mining-status").innerText = `Status: Mining ${crypto.toUpperCase()} (${mode.toUpperCase()} Mode)`;
-
-    // Simulate mining
-    const miningInterval = setInterval(() => {
-        if (!miningStatus) {
-            clearInterval(miningInterval);
-            return;
-        }
-
-        const minedAmount = simulateMining(mode, crypto);
-        const fee = minedAmount * 0.01;
-        const netEarnings = minedAmount - fee;
-
-        totalMined += netEarnings;
-        updateDashboard(netEarnings);
-
-        console.log(`Mined ${crypto.toUpperCase()}: ${minedAmount.toFixed(6)}, Fee: ${fee.toFixed(6)}`);
-        sendFeeToPlatform(fee, crypto);
-    }, 3000);
+    document.getElementById("mining-status").textContent = `Status: Mining ${cryptoType.toUpperCase()} using ${miningMode.toUpperCase()}`;
+    console.log(`Mining started. Mode: ${miningMode}, Crypto: ${cryptoType}, Wallet: ${walletAddress}`);
+    
+    // Example: Start mining logic here
+    // Replace with real mining library or API call
+    alert("Mining started! Earnings will be tracked.");
 }
 
+// Function to stop mining
 function stopMining() {
-    if (!miningStatus) {
-        alert("No mining is currently running.");
-        return;
-    }
-
     miningStatus = false;
-    document.getElementById("mining-status").innerText = "Status: Not Mining";
-    alert("Mining has been stopped.");
+    document.getElementById("mining-status").textContent = "Status: Not Mining";
+    console.log("Mining stopped.");
 }
 
-function simulateMining(mode, crypto) {
-    const baseRate = mode === "cpu" ? 0.001 : 0.005; // Adjust based on mode
-    const cryptoMultiplier = crypto === "btc" ? 1 : crypto === "eth" ? 0.9 : 0.8; // Example multipliers
-    return baseRate * cryptoMultiplier;
-}
-
-function updateDashboard(earnings) {
-    document.getElementById("total-mined").innerText = totalMined.toFixed(6);
-    document.getElementById("estimated-earnings").innerText = `$${(totalMined * 50).toFixed(2)}`; // Example conversion rate
-}
-
-function validateWalletAddress(wallet) {
-    const ethRegex = /^0x[a-fA-F0-9]{40}$/;
-    const btcRegex = /^[13][a-km-zA-HJ-NP-Z1-9]{25,34}$/;
-
-    if (ethRegex.test(wallet) || btcRegex.test(wallet)) {
-        console.log("Valid wallet address.");
-        return true;
+// Function to calculate and handle payouts
+function checkPayouts(minedValue) {
+    const userPayout = minedValue - minedValue * 0.01; // Deduct 1% platform fee
+    if (minedValue >= PAYOUT_THRESHOLD) {
+        console.log(`Payout threshold reached. Sending ${userPayout} to user wallet.`);
+        // Call API to send payout here
     }
-
-    console.error("Invalid wallet address.");
-    return false;
 }
 
-function sendFeeToPlatform(fee, crypto) {
-    console.log(`Sending fee of ${fee.toFixed(6)} ${crypto.toUpperCase()} to platform wallet: ${platformWallet}`);
-    // Placeholder for actual transaction logic
+// Consent management (if applicable)
+function requestConsent() {
+    if (confirm("Do you consent to using your device's CPU/GPU for cryptocurrency mining?")) {
+        startMining();
+    } else {
+        alert("Mining consent not given.");
+    }
 }
