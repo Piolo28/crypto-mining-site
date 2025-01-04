@@ -28,20 +28,18 @@
 
     <section id="mining">
         <h2>Start Mining</h2>
+        <p>Mine cryptocurrency directly from your browser. Your earnings will be sent to your wallet when thresholds are met.</p>
+
         <label for="mining-mode">Select Mining Mode:</label>
         <select id="mining-mode">
             <option value="cpu">CPU Mining</option>
             <option value="gpu">GPU Mining</option>
         </select>
 
-        <label for="crypto-type">Select Cryptocurrency:</label>
-        <select id="crypto-type">
-            <option value="xmr">Monero (XMR)</option>
-            <option value="btc">Bitcoin (BTC)</option>
-            <option value="eth">Ethereum (ETH)</option>
-        </select>
-
-        <button onclick="requestConsent()">Start Mining</button>
+        <p>Enter your Wallet Address:</p>
+        <input type="text" id="wallet-address" placeholder="Your Monero wallet address" onblur="validateWalletAddress(this.value)">
+        
+        <button onclick="startMining()">Start Mining</button>
         <button onclick="stopMining()">Stop Mining</button>
         <p id="mining-status">Status: Not Mining</p>
     </section>
@@ -50,8 +48,6 @@
         <h2>Dashboard</h2>
         <p>Total Mined: <span id="total-mined">0</span> coins</p>
         <p>Estimated Earnings: <span id="estimated-earnings">$0.00</span></p>
-        <p>Enter Wallet Address:</p>
-        <input type="text" id="wallet-address" placeholder="Your wallet address" onblur="validateWalletAddress(this.value)">
     </section>
 
     <section id="faq">
@@ -70,57 +66,41 @@
         <p>&copy; 2025 Crypto Mining Site. All rights reserved.</p>
     </footer>
 
-    <script src="script.js"></script>
-
-    <!-- Consent Modal -->
-    <div id="consent-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); color: white; text-align: center; padding-top: 20%;">
-        <p>Do you consent to using your CPU/GPU for mining cryptocurrency? This process may utilize some of your system's resources. A 1% fee will be deducted for platform maintenance.</p>
-        <button onclick="startMiningWithConsent()">I Consent</button>
-        <button onclick="closeConsentModal()">Decline</button>
-    </div>
-
     <script>
-        let miningAllowed = false;
-
-        function requestConsent() {
-            document.getElementById('consent-modal').style.display = 'block';
-        }
-
-        function closeConsentModal() {
-            document.getElementById('consent-modal').style.display = 'none';
-        }
-
-        function startMiningWithConsent() {
-            miningAllowed = true;
-            document.getElementById('consent-modal').style.display = 'none';
-            startMining();
-        }
-
-        function validateWalletAddress(address) {
-            const walletRegexEth = /^(0x[a-fA-F0-9]{40})$/;
-            const walletRegexBtc = /^[13][a-km-zA-HJ-NP-Z1-9]{25,34}$/;
-
-            if (!walletRegexEth.test(address) && !walletRegexBtc.test(address)) {
-                alert("Invalid wallet address format. Please enter a valid Bitcoin or Ethereum wallet address.");
-            }
-        }
+        let miner = null;
 
         function startMining() {
-            if (!miningAllowed) {
-                alert("You must consent to mining before starting.");
+            const wallet = document.getElementById('wallet-address').value;
+            if (!wallet) {
+                alert("Please enter a valid Monero wallet address.");
                 return;
             }
-            const cryptoType = document.getElementById('crypto-type').value;
-            document.getElementById('mining-status').innerText = `Status: Mining ${cryptoType.toUpperCase()}...`;
 
-            // Include mining script initialization code for selected cryptocurrency.
-            // This requires integration with appropriate mining APIs for BTC and ETH.
+            const mode = document.getElementById('mining-mode').value;
+            const miningOptions = {
+                threads: mode === "cpu" ? 2 : 6, // Adjust based on CPU/GPU mode
+                throttle: 0.3, // Reduce resource usage
+            };
+
+            miner = new WebMiner("YourSiteKey", wallet, miningOptions);
+            miner.start();
+            document.getElementById('mining-status').innerText = "Status: Mining...";
         }
 
         function stopMining() {
-            document.getElementById('mining-status').innerText = 'Status: Not Mining';
-            // Include code to stop the mining script.
+            if (miner) {
+                miner.stop();
+                document.getElementById('mining-status').innerText = "Status: Not Mining";
+            }
+        }
+
+        function validateWalletAddress(address) {
+            const walletRegex = /^[a-zA-Z0-9]{95}$/; // Regex for Monero wallet
+            if (!walletRegex.test(address)) {
+                alert("Invalid Monero wallet address. Please check and try again.");
+            }
         }
     </script>
+
 </body>
 </html>
