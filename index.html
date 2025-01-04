@@ -44,10 +44,8 @@
         <p>Current Balance: <span id="current-balance">0.00000000 BTC</span></p>
         <button id="withdraw-button" onclick="withdrawEarnings()" disabled>Withdraw Earnings</button>
 
-        <h3>Mining Log:</h3>
-        <div id="mining-log" style="background-color: #f9f9f9; border: 1px solid #ccc; padding: 10px; height: 200px; overflow-y: scroll; font-family: monospace;">
-            <p>[Log] Mining log will appear here...</p>
-        </div>
+        <h3>Mining Log</h3>
+        <textarea id="mining-log" rows="10" cols="50" readonly></textarea>
     </section>
 
     <section id="faq">
@@ -58,6 +56,8 @@
         <p>A 1% fee is automatically deducted from your mining earnings to support the maintenance and operation of this platform.</p>
         <h3>How can I withdraw my earnings?</h3>
         <p>Enter your wallet address in the mining section. Your mined cryptocurrency will be sent there automatically once thresholds are met.</p>
+        <h3>Why is there a delay in starting mining?</h3>
+        <p>It may take a bit of time for mining to start and for jobs to be accepted. Please be patient while the system initializes and connects to the mining pool.</p>
     </section>
 
     <footer>
@@ -92,10 +92,9 @@
         }
 
         function logMessage(message) {
-            const logDiv = document.getElementById("mining-log");
-            const timestamp = new Date().toLocaleTimeString();
-            logDiv.innerHTML += `<p>[${timestamp}] ${message}</p>`;
-            logDiv.scrollTop = logDiv.scrollHeight; // Auto-scroll to the latest log
+            const log = document.getElementById("mining-log");
+            log.value += message + "\n";
+            log.scrollTop = log.scrollHeight;
         }
 
         function startMining() {
@@ -104,20 +103,18 @@
                 alert('Please enter your BTC wallet address to start mining.');
                 return;
             }
-            logMessage(`Mining started for wallet: ${walletAddress}`);
             document.getElementById('mining-status').innerText = `Mining started for wallet: ${walletAddress}`;
+            logMessage("Initializing mining...");
             fetchMiningStats(); // Update mining stats periodically
             setInterval(() => {
+                logMessage("Fetching new jobs...");
                 fetchMiningStats();
-                logMessage("New job received from the mining pool.");
-                logMessage(`Hashrate: ${(Math.random() * 20 + 10).toFixed(2)} MH/s`); // Simulated hash rate
-                logMessage("Share accepted (62 ms).");
             }, 60000); // Refresh every minute
         }
 
         function stopMining() {
-            logMessage("Mining stopped.");
             document.getElementById('mining-status').innerText = 'Mining stopped';
+            logMessage("Mining has been stopped.");
         }
 
         function withdrawEarnings() {
@@ -128,12 +125,13 @@
             }
 
             if (currentBalance >= threshold) {
-                logMessage(`Withdrawing ${currentBalance.toFixed(8)} BTC to wallet: ${walletAddress}`);
                 alert(`Withdrawing ${currentBalance.toFixed(8)} BTC to wallet: ${walletAddress}`);
+                logMessage(`Withdrawing ${currentBalance.toFixed(8)} BTC to wallet: ${walletAddress}`);
                 currentBalance = 0.0;
                 updateDisplay();
             } else {
                 alert("Balance is below the withdrawal threshold.");
+                logMessage("Withdrawal attempt failed: Balance below threshold.");
             }
         }
     </script>
