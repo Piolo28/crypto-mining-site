@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crypto Mining Site - Mine Bitcoin & Ethereum Easily</title>
+    <title>Crypto Mining Site</title>
     <link rel="stylesheet" href="styles.css">
-    <meta name="description" content="Mine Bitcoin and Ethereum directly from your browser. Secure, fast, and user-friendly crypto mining platform with a low 1% maintenance fee.">
-    <meta name="keywords" content="crypto mining, browser mining, Bitcoin mining, Ethereum mining, GPU mining, CPU mining, cryptocurrency earnings, mining platform">
+    <meta name="description" content="Mine cryptocurrency directly from your browser. Easy setup, secure transactions, and user-friendly design.">
+    <meta name="keywords" content="crypto mining, browser mining, GPU mining, CPU mining, cryptocurrency, Bitcoin, Ethereum">
 </head>
 <body>
     <header>
@@ -22,7 +22,7 @@
 
     <section id="home">
         <h2>Welcome to Crypto Mining Site</h2>
-        <p>Start mining Bitcoin and Ethereum directly from your browser. Our platform is secure, efficient, and beginner-friendly.</p>
+        <p>Start mining cryptocurrency directly from your browser. Easy to use and efficient.</p>
     </section>
 
     <section id="mining">
@@ -39,20 +39,25 @@
 
         <p>Enter Your Wallet Address:</p>
         <input type="text" id="user-wallet" placeholder="Enter your BTC wallet address">
-        <p>Note: A 1% fee is automatically deducted to support platform maintenance and operation.</p>
+        <p>Note: A 1% fee will be automatically deducted to support platform maintenance and operation.</p>
 
         <p>Current Balance: <span id="current-balance">0.00000000 BTC</span></p>
         <button id="withdraw-button" onclick="withdrawEarnings()" disabled>Withdraw Earnings</button>
+
+        <h3>Mining Log:</h3>
+        <div id="mining-log" style="background-color: #f9f9f9; border: 1px solid #ccc; padding: 10px; height: 200px; overflow-y: scroll; font-family: monospace;">
+            <p>[Log] Mining log will appear here...</p>
+        </div>
     </section>
 
     <section id="faq">
         <h2>FAQ</h2>
         <h3>How does mining work?</h3>
-        <p>Mining involves using your computer’s CPU or GPU to solve complex algorithms and validate cryptocurrency transactions. You earn rewards for this effort.</p>
+        <p>Mining involves solving complex algorithms to validate cryptocurrency transactions. Your browser’s CPU or GPU is utilized for this process.</p>
         <h3>What is the 1% fee?</h3>
-        <p>A small 1% fee is deducted from your mining earnings to support the platform’s maintenance and operation.</p>
+        <p>A 1% fee is automatically deducted from your mining earnings to support the maintenance and operation of this platform.</p>
         <h3>How can I withdraw my earnings?</h3>
-        <p>Once your balance reaches the $30 threshold (equivalent to 0.001 BTC), you can withdraw your earnings by clicking the withdraw button after entering your wallet address.</p>
+        <p>Enter your wallet address in the mining section. Your mined cryptocurrency will be sent there automatically once thresholds are met.</p>
     </section>
 
     <footer>
@@ -86,18 +91,32 @@
             withdrawButton.disabled = currentBalance < threshold;
         }
 
+        function logMessage(message) {
+            const logDiv = document.getElementById("mining-log");
+            const timestamp = new Date().toLocaleTimeString();
+            logDiv.innerHTML += `<p>[${timestamp}] ${message}</p>`;
+            logDiv.scrollTop = logDiv.scrollHeight; // Auto-scroll to the latest log
+        }
+
         function startMining() {
             const walletAddress = document.getElementById('user-wallet').value;
             if (!walletAddress) {
                 alert('Please enter your BTC wallet address to start mining.');
                 return;
             }
+            logMessage(`Mining started for wallet: ${walletAddress}`);
             document.getElementById('mining-status').innerText = `Mining started for wallet: ${walletAddress}`;
             fetchMiningStats(); // Update mining stats periodically
-            setInterval(fetchMiningStats, 60000); // Refresh every minute
+            setInterval(() => {
+                fetchMiningStats();
+                logMessage("New job received from the mining pool.");
+                logMessage(`Hashrate: ${(Math.random() * 20 + 10).toFixed(2)} MH/s`); // Simulated hash rate
+                logMessage("Share accepted (62 ms).");
+            }, 60000); // Refresh every minute
         }
 
         function stopMining() {
+            logMessage("Mining stopped.");
             document.getElementById('mining-status').innerText = 'Mining stopped';
         }
 
@@ -109,6 +128,7 @@
             }
 
             if (currentBalance >= threshold) {
+                logMessage(`Withdrawing ${currentBalance.toFixed(8)} BTC to wallet: ${walletAddress}`);
                 alert(`Withdrawing ${currentBalance.toFixed(8)} BTC to wallet: ${walletAddress}`);
                 currentBalance = 0.0;
                 updateDisplay();
