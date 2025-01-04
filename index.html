@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Mine cryptocurrency for free directly in your browser. Start earning Bitcoin and other cryptos today with no setup costs.">
+  <meta name="keywords" content="free crypto mining, browser mining, Bitcoin mining, cryptocurrency">
+  <meta name="author" content="Your Name">
+  <title>Free Crypto Mining | Start Earning Today</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+      color: #333;
+    }
+    header {
+      background-color: #222;
+      color: #fff;
+      padding: 1rem 0;
+      text-align: center;
+    }
+    header h1 {
+      margin: 0;
+      font-size: 2rem;
+    }
+    header p {
+      margin: 0.5rem 0 0;
+      font-size: 1.1rem;
+    }
+    main {
+      padding: 2rem;
+      text-align: center;
+    }
+    .btn-start {
+      background-color: #007BFF;
+      color: #fff;
+      border: none;
+      padding: 1rem 2rem;
+      font-size: 1.2rem;
+      cursor: pointer;
+      border-radius: 5px;
+      margin-top: 1.5rem;
+    }
+    .btn-start:hover {
+      background-color: #0056b3;
+    }
+    .stats {
+      margin-top: 2rem;
+      text-align: center;
+    }
+    .stats div {
+      margin: 0.5rem 0;
+      font-size: 1.1rem;
+    }
+    footer {
+      background-color: #222;
+      color: #fff;
+      text-align: center;
+      padding: 1rem 0;
+      margin-top: 2rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Free Crypto Mining</h1>
+    <p>Mine Bitcoin and other cryptocurrencies directly in your browser!</p>
+  </header>
+  <main>
+    <h2>Start Mining Now</h2>
+    <p>Click the button below to start mining. Earn cryptocurrency while browsing the web.</p>
+    <button class="btn-start" onclick="startMining()">Start Mining</button>
+
+    <div class="stats">
+      <h3>Mining Stats</h3>
+      <div>Hash Rate: <span id="hash-rate">0 H/s</span></div>
+      <div>Earnings: <span id="earnings">0 BTC</span></div>
+    </div>
+  </main>
+  <footer>
+    <p>&copy; 2025 Free Crypto Mining. All rights reserved.</p>
+  </footer>
+
+  <script src="https://example-mining-script.js"></script>
+  <script>
+    let isMining = false;
+
+    function startMining() {
+      if (!isMining) {
+        alert('Mining started! Your CPU will be used to mine cryptocurrency.');
+        isMining = true;
+
+        // Example mining script initialization (replace with actual mining script code)
+        const hashRateElement = document.getElementById('hash-rate');
+        const earningsElement = document.getElementById('earnings');
+
+        let hashRate = 0;
+        let earnings = 0;
+
+        setInterval(() => {
+          hashRate = Math.floor(Math.random() * 100); // Simulated hash rate
+          earnings += hashRate * 0.00000001; // Simulated earnings
+
+          hashRateElement.textContent = `${hashRate} H/s`;
+          earningsElement.textContent = `${earnings.toFixed(8)} BTC`;
+        }, 1000);
+      }
+    }
+  </script>
+</body>
+</html>
