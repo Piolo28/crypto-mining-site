@@ -3,87 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ethereum Browser Mining</title>
-    <meta name="description" content="Mine Ethereum directly from your browser. User-friendly and efficient mining script with 1% fee integration.">
-    <meta name="keywords" content="Ethereum mining, browser mining, crypto mining, ETH mining">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f9;
-        }
-        header {
-            padding: 20px;
-            background: #4CAF50;
-            color: white;
-        }
-        section {
-            margin: 20px;
-            padding: 20px;
-            background: #ffffff;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        footer {
-            margin-top: 20px;
-            padding: 10px;
-            background: #333;
-            color: white;
-            font-size: 14px;
-        }
-    </style>
+    <title>Crypto Mining Site</title>
+    <meta name="description" content="Mine Ethereum directly from your browser. Start mining and earn securely with a simple setup.">
+    <meta name="keywords" content="crypto mining, browser mining, Ethereum mining, cryptocurrency, WebMinePool">
+    <meta name="author" content="Crypto Mining Site">
 </head>
 <body>
     <header>
-        <h1>Ethereum Browser Mining</h1>
-        <p>Mine Ethereum directly from your browser. Start mining today!</p>
+        <h1>Crypto Mining Site</h1>
+        <nav>
+            <ul>
+                <li><a href="#home">Home</a></li>
+                <li><a href="#mining">Start Mining</a></li>
+                <li><a href="#faq">FAQ</a></li>
+            </ul>
+        </nav>
     </header>
 
-    <section>
+    <section id="home">
+        <h2>Welcome to Crypto Mining Site</h2>
+        <p>Mine Ethereum directly from your browser. It's easy, secure, and efficient!</p>
+    </section>
+
+    <section id="mining">
         <h2>Start Mining</h2>
-        <button id="start-mining">Start Mining</button>
-        <button id="stop-mining">Stop Mining</button>
+        <button id="start-mining" onclick="startMining()">Start Mining</button>
+        <button id="stop-mining" onclick="stopMining()">Stop Mining</button>
         <p id="mining-status">Status: Not Mining</p>
     </section>
 
-    <section>
-        <h2>Dashboard</h2>
-        <p>Total Hashes: <span id="total-hashes">0</span></p>
-        <p>Earnings Estimate: <span id="estimated-earnings">0.0000 ETH</span></p>
+    <section id="faq">
+        <h2>FAQ</h2>
+        <h3>How does mining work?</h3>
+        <p>Your browser's CPU or GPU solves algorithms to validate Ethereum transactions, earning rewards in return.</p>
+        <h3>What is the 1% fee?</h3>
+        <p>1% of the mined cryptocurrency is sent to the platform wallet to support maintenance and operation.</p>
+        <h3>Which cryptocurrency can I mine?</h3>
+        <p>Currently, you can mine Ethereum (ETH) directly on this platform.</p>
     </section>
 
     <footer>
-        <p>&copy; 2025 Ethereum Browser Mining. All rights reserved.</p>
+        <p>&copy; 2025 Crypto Mining Site. All rights reserved.</p>
     </footer>
 
+    <!-- WebMinePool Mining Script -->
     <script src="https://webminepool.com/lib/base.js"></script>
     <script>
-        // Configuration
-        const miner = new WebMiner({
-            siteKey: "SK_RDlb7DhGQbqq5jlt87raJ", // Your WebMinePool Site Key
-            walletAddress: "0x09d9dfA5Dc0CCD94356DE335EF2c3bf2daF64e77", // Your Ethereum wallet for 1% fee
-            threads: navigator.hardwareConcurrency, // Use all available CPU threads
+        const miner = new WMPMiner('SK_RDlb7DhGQbqq5jlt87raJ', {
+            throttle: 0.3, // Adjust throttle for CPU usage (0 = full power, 1 = no power)
         });
 
-        // Mining Controls
-        document.getElementById('start-mining').onclick = () => {
-            miner.start();
-            document.getElementById('mining-status').innerText = 'Status: Mining';
-        };
+        function startMining() {
+            if (!miner.isRunning()) {
+                miner.start();
+                document.getElementById('mining-status').innerText = 'Status: Mining...';
+            }
+        }
 
-        document.getElementById('stop-mining').onclick = () => {
-            miner.stop();
-            document.getElementById('mining-status').innerText = 'Status: Not Mining';
-        };
-
-        // Monitor Mining Stats
-        setInterval(() => {
-            const totalHashes = miner.getTotalHashes();
-            const estimatedEarnings = (totalHashes / 1000000).toFixed(4); // Example calculation
-            document.getElementById('total-hashes').innerText = totalHashes;
-            document.getElementById('estimated-earnings').innerText = estimatedEarnings + " ETH";
-        }, 1000);
+        function stopMining() {
+            if (miner.isRunning()) {
+                miner.stop();
+                document.getElementById('mining-status').innerText = 'Status: Not Mining';
+            }
+        }
     </script>
 </body>
 </html>
