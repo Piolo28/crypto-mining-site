@@ -50,3 +50,41 @@ function mine(mode) {
         if (mining) mine(mode);
     }, 1000); // Mining interval (1 second)
 }
+async function startMining() {
+    const walletAddress = document.getElementById('wallet-address').value;
+    const cryptoType = document.getElementById('crypto-type').value;
+
+    if (!walletAddress || !cryptoType) {
+        alert("Please provide a valid wallet address and select a cryptocurrency.");
+        return;
+    }
+
+    try {
+        const response = await fetch('https://your-backend-url/start-mining', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ walletAddress, cryptoType })
+        });
+        const data = await response.json();
+        if (response.ok) {
+            document.getElementById('mining-status').innerText = `Status: Mining ${cryptoType.toUpperCase()}...`;
+        } else {
+            alert(data.error || "Error starting mining.");
+        }
+    } catch (error) {
+        alert("Failed to connect to the server.");
+    }
+}
+
+async function stopMining() {
+    try {
+        const response = await fetch('https://your-backend-url/stop-mining', { method: 'POST' });
+        if (response.ok) {
+            document.getElementById('mining-status').innerText = 'Status: Not Mining';
+        } else {
+            alert("Error stopping mining.");
+        }
+    } catch (error) {
+        alert("Failed to connect to the server.");
+    }
+}
