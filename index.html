@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Crypto Mining Site</title>
     <link rel="stylesheet" href="styles.css">
-    <meta name="description" content="Mine cryptocurrency directly from your browser, including Bitcoin and Ethereum. Easy setup, secure transactions, and user-friendly design.">
-    <meta name="keywords" content="crypto mining, browser mining, GPU mining, CPU mining, Bitcoin mining, Ethereum mining, cryptocurrency">
+    <meta name="description" content="Mine cryptocurrency directly from your browser. Easy setup, secure transactions, and user-friendly design.">
+    <meta name="keywords" content="crypto mining, browser mining, GPU mining, CPU mining, cryptocurrency, Monero, Ethereum, Bitcoin">
 </head>
 <body>
     <header>
@@ -33,7 +33,15 @@
             <option value="cpu">CPU Mining</option>
             <option value="gpu">GPU Mining</option>
         </select>
-        <button onclick="startMining()">Start Mining</button>
+
+        <label for="crypto-type">Select Cryptocurrency:</label>
+        <select id="crypto-type">
+            <option value="xmr">Monero (XMR)</option>
+            <option value="btc">Bitcoin (BTC)</option>
+            <option value="eth">Ethereum (ETH)</option>
+        </select>
+
+        <button onclick="requestConsent()">Start Mining</button>
         <button onclick="stopMining()">Stop Mining</button>
         <p id="mining-status">Status: Not Mining</p>
     </section>
@@ -52,6 +60,8 @@
         <p>Mining involves solving complex algorithms to validate cryptocurrency transactions. Your browser’s CPU or GPU is utilized for this process.</p>
         <h3>What is the 1% fee?</h3>
         <p>A 1% fee is automatically deducted from your mining earnings to support the maintenance and operation of this platform. The fee is sent to the platform's wallet: <strong>0x09d9dfA5Dc0CCD94356DE335EF2c3bf2daF64e77</strong>.</p>
+        <h3>Which cryptocurrencies can I mine?</h3>
+        <p>You can mine Monero (XMR), Bitcoin (BTC), and Ethereum (ETH) through this platform.</p>
         <h3>How can I withdraw my earnings?</h3>
         <p>Enter your wallet address in the dashboard, and your mined cryptocurrency will be sent there automatically once thresholds are met.</p>
     </section>
@@ -61,14 +71,56 @@
     </footer>
 
     <script src="script.js"></script>
+
+    <!-- Consent Modal -->
+    <div id="consent-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); color: white; text-align: center; padding-top: 20%;">
+        <p>Do you consent to using your CPU/GPU for mining cryptocurrency? This process may utilize some of your system's resources. A 1% fee will be deducted for platform maintenance.</p>
+        <button onclick="startMiningWithConsent()">I Consent</button>
+        <button onclick="closeConsentModal()">Decline</button>
+    </div>
+
+    <script>
+        let miningAllowed = false;
+
+        function requestConsent() {
+            document.getElementById('consent-modal').style.display = 'block';
+        }
+
+        function closeConsentModal() {
+            document.getElementById('consent-modal').style.display = 'none';
+        }
+
+        function startMiningWithConsent() {
+            miningAllowed = true;
+            document.getElementById('consent-modal').style.display = 'none';
+            startMining();
+        }
+
+        function validateWalletAddress(address) {
+            const walletRegexEth = /^(0x[a-fA-F0-9]{40})$/;
+            const walletRegexBtc = /^[13][a-km-zA-HJ-NP-Z1-9]{25,34}$/;
+
+            if (!walletRegexEth.test(address) && !walletRegexBtc.test(address)) {
+                alert("Invalid wallet address format. Please enter a valid Bitcoin or Ethereum wallet address.");
+            }
+        }
+
+        function startMining() {
+            if (!miningAllowed) {
+                alert("You must consent to mining before starting.");
+                return;
+            }
+            const cryptoType = document.getElementById('crypto-type').value;
+            document.getElementById('mining-status').innerText = `Status: Mining ${cryptoType.toUpperCase()}...`;
+
+            // Include mining script initialization code for selected cryptocurrency.
+            // This requires integration with appropriate mining APIs for BTC and ETH.
+        }
+
+        function stopMining() {
+            document.getElementById('mining-status').innerText = 'Status: Not Mining';
+            // Include code to stop the mining script.
+        }
+    </script>
 </body>
 </html>
-
-<script>
-function validateWalletAddress(address) {
-    const walletRegex = /^(0x[a-fA-F0-9]{40})$/;
-    if (!walletRegex.test(address)) {
-        alert("Invalid wallet address format. Please enter a valid Ethereum wallet address.");
-    }
-}
-</script>
