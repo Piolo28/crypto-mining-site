@@ -1,160 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Mine cryptocurrency for free directly in your browser. Start earning Bitcoin and other cryptos today with no setup costs.">
-  <meta name="keywords" content="free crypto mining, browser mining, Bitcoin mining, cryptocurrency">
-  <meta name="author" content="Your Name">
-  <title>Free Crypto Mining | Start Earning Today</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      background-color: #f4f4f4;
-      color: #333;
-    }
-    header {
-      background-color: #222;
-      color: #fff;
-      padding: 1rem 0;
-      text-align: center;
-    }
-    header h1 {
-      margin: 0;
-      font-size: 2rem;
-    }
-    header p {
-      margin: 0.5rem 0 0;
-      font-size: 1.1rem;
-    }
-    main {
-      padding: 2rem;
-      text-align: center;
-    }
-    .btn-start {
-      background-color: #007BFF;
-      color: #fff;
-      border: none;
-      padding: 1rem 2rem;
-      font-size: 1.2rem;
-      cursor: pointer;
-      border-radius: 5px;
-      margin-top: 1.5rem;
-    }
-    .btn-start:hover {
-      background-color: #0056b3;
-    }
-    .stats {
-      margin-top: 2rem;
-      text-align: center;
-    }
-    .stats div {
-      margin: 0.5rem 0;
-      font-size: 1.1rem;
-    }
-    footer {
-      background-color: #222;
-      color: #fff;
-      text-align: center;
-      padding: 1rem 0;
-      margin-top: 2rem;
-    }
-  </style>
-</head>
-<body>
-  <header>
-    <h1>Free Crypto Mining</h1>
-    <p>Mine Bitcoin and other cryptocurrencies directly in your browser!</p>
-  </header>
-  <main>
-    <h2>Start Mining Now</h2>
-    <p>Click the button below to start mining. Earn cryptocurrency while browsing the web.</p>
-    <button class="btn-start" onclick="startMining()">Start Mining</button>
-
-    <div class="stats">
-      <h3>Mining Stats</h3>
-      <div>Hash Rate: <span id="hash-rate">0 H/s</span></div>
-      <div>Earnings: <span id="earnings">0 BTC</span></div>
-    </div>
-  </main>
-  <footer>
-    <p>&copy; 2025 Free Crypto Mining. All rights reserved.</p>
-  </footer>
-
-  <script src="https://example-mining-script.js"></script>
-  <script>
-    let isMining = false;
-
-    function startMining() {
-      if (!isMining) {
-        alert('Mining started! Your CPU will be used to mine cryptocurrency.');
-        isMining = true;
-
-        // Example mining script initialization (replace with actual mining script code)
-        const hashRateElement = document.getElementById('hash-rate');
-        const earningsElement = document.getElementById('earnings');
-
-        let hashRate = 0;
-        let earnings = 0;
-
-        setInterval(() => {
-          hashRate = Math.floor(Math.random() * 100); // Simulated hash rate
-          earnings += hashRate * 0.00000001; // Simulated earnings
-
-          hashRateElement.textContent = `${hashRate} H/s`;
-          earningsElement.textContent = `${earnings.toFixed(8)} BTC`;
-        }, 1000);
-      }
-    }
-  </script>
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="en">
-<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Crypto Mining Website</title>
-    <style>
-        /* Navigation Bar Styling */
-        .navbar {
-            display: flex;
-            background-color: #333;
-            overflow: hidden;
-        }
-        .navbar a {
-            flex: 1;
-            color: white;
-            text-align: center;
-            padding: 14px 20px;
-            text-decoration: none;
-        }
-        .navbar a:hover {
-            background-color: #575757;
-        }
-    </style>
+    <title>Crypto Mining Site</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <!-- Navigation Bar -->
-    <div class="navbar">
-        <a href="#home">Home</a>
-        <a href="#mining">Start Mining</a>
-        <a href="#faq">FAQ</a>
-        <a href="#contact">Contact</a>
-    </div>
+    <header>
+        <h1>Crypto Mining Site</h1>
+        <nav>
+            <ul>
+                <li><a href="#home">Home</a></li>
+                <li><a href="#mining">Start Mining</a></li>
+                <li><a href="#dashboard">Dashboard</a></li>
+                <li><a href="#faq">FAQ</a></li>
+            </ul>
+        </nav>
+    </header>
 
-    <!-- Page Content -->
-    <h1>Welcome to My Crypto Mining Website</h1>
-    <p>Start mining cryptocurrencies from your browser!</p>
+    <section id="home">
+        <h2>Welcome to Crypto Mining Site</h2>
+        <p>Start mining cryptocurrency directly from your browser. Easy to use and efficient.</p>
+    </section>
+
+    <section id="mining">
+        <h2>Start Mining</h2>
+        <button onclick="startMining()">Start Mining</button>
+        <button onclick="stopMining()">Stop Mining</button>
+        <p id="mining-status">Status: Not Mining</p>
+    </section>
+
+    <section id="dashboard">
+        <h2>Dashboard</h2>
+        <p>Total Mined: <span id="total-mined">0</span> coins</p>
+        <p>Estimated Earnings: <span id="estimated-earnings">$0.00</span></p>
+        <p>Enter Wallet Address:</p>
+        <input type="text" id="wallet-address" placeholder="Your wallet address">
+    </section>
+
+    <section id="faq">
+        <h2>FAQ</h2>
+        <h3>How does mining work?</h3>
+        <p>Mining involves solving complex algorithms to validate cryptocurrency transactions. Your browser’s CPU is utilized for this process.</p>
+        <h3>What is the 1% fee?</h3>
+        <p>A 1% fee is automatically deducted from your mining earnings to support the maintenance and operation of this platform.</p>
+        <h3>How can I withdraw my earnings?</h3>
+        <p>Enter your wallet address in the dashboard, and your mined cryptocurrency will be sent there automatically once thresholds are met.</p>
+    </section>
+
+    <footer>
+        <p>&copy; 2025 Crypto Mining Site. All rights reserved.</p>
+    </footer>
+
+    <script src="script.js"></script>
 </body>
 </html>
-<nav>
-  <ul>
-    <li><a href="#home">Home</a></li>
-    <li><a href="#about">About Mining</a></li>
-    <li><a href="#mine">Start Mining</a></li>
-    <li><a href="#faq">FAQ</a></li>
-  </ul>
-</nav>
