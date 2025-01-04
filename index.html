@@ -7,6 +7,28 @@
     <link rel="stylesheet" href="styles.css">
     <meta name="description" content="Mine cryptocurrency directly from your browser. Easy setup, secure transactions, and user-friendly design.">
     <meta name="keywords" content="crypto mining, browser mining, GPU mining, CPU mining, cryptocurrency, Monero, Ethereum, Bitcoin">
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-auth.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyACpx85JA-GgByBS1hspX1o_581nilmhCY",
+            authDomain: "crypto-mining-ad151.firebaseapp.com",
+            projectId: "crypto-mining-ad151",
+            storageBucket: "crypto-mining-ad151.firebasestorage.app",
+            messagingSenderId: "269522306741",
+            appId: "1:269522306741:web:3719d1788140c6dfa820fc"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+
+        // Firestore reference
+        const db = firebase.firestore();
+
+        // Database functions can be added here
+    </script>
 </head>
 <body>
     <header>
@@ -70,6 +92,6 @@
         <p>&copy; 2025 Crypto Mining Site. All rights reserved.</p>
     </footer>
 
- <script src="mining-script.js"></script>
+    <script src="mining-script.js"></script>
 </body>
 </html>
