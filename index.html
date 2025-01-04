@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Crypto Mining Site</title>
-    <meta name="description" content="Mine Ethereum directly from your browser. Start mining and earn securely with a simple setup.">
-    <meta name="keywords" content="crypto mining, browser mining, Ethereum mining, cryptocurrency, WebMinePool">
-    <meta name="author" content="Crypto Mining Site">
+    <link rel="stylesheet" href="styles.css">
+    <meta name="description" content="Mine cryptocurrency directly from your browser. Easy setup, secure transactions, and user-friendly design. Withdraw earnings once you reach the $30 threshold.">
+    <meta name="keywords" content="crypto mining, browser mining, GPU mining, CPU mining, cryptocurrency, Bitcoin, Ethereum">
 </head>
 <body>
     <header>
@@ -22,49 +22,102 @@
 
     <section id="home">
         <h2>Welcome to Crypto Mining Site</h2>
-        <p>Mine Ethereum directly from your browser. It's easy, secure, and efficient!</p>
+        <p>Start mining cryptocurrency directly from your browser. Easy to use and efficient.</p>
     </section>
 
     <section id="mining">
         <h2>Start Mining</h2>
-        <button id="start-mining" onclick="startMining()">Start Mining</button>
-        <button id="stop-mining" onclick="stopMining()">Stop Mining</button>
+        <label for="mining-mode">Select Mining Mode:</label>
+        <select id="mining-mode">
+            <option value="cpu">CPU Mining</option>
+            <option value="gpu">GPU Mining</option>
+        </select>
+
+        <p>Enter Your Wallet Address:</p>
+        <input type="text" id="user-wallet" placeholder="Enter your BTC wallet address">
+        <p>Note: A 1% fee will be sent to the platform wallet: <strong>3CfmH7xn3Q5D1oUTPv3fTxWPXLcRao49ep</strong>.</p>
+
+        <button onclick="startMining()">Start Mining</button>
+        <button onclick="stopMining()">Stop Mining</button>
         <p id="mining-status">Status: Not Mining</p>
+
+        <p>Current Balance: <span id="current-balance">0.00000000</span> BTC</p>
+        <button id="withdraw-button" onclick="withdrawEarnings()" disabled>Withdraw Earnings</button>
     </section>
 
     <section id="faq">
         <h2>FAQ</h2>
         <h3>How does mining work?</h3>
-        <p>Your browser's CPU or GPU solves algorithms to validate Ethereum transactions, earning rewards in return.</p>
+        <p>Mining involves solving complex algorithms to validate cryptocurrency transactions. Your browser’s CPU or GPU is utilized for this process.</p>
+        <h3>What is the $30 payout threshold?</h3>
+        <p>You can withdraw your earnings once your balance reaches $30 worth of mined cryptocurrency. A 1% fee will be deducted from the total amount.</p>
         <h3>What is the 1% fee?</h3>
-        <p>1% of the mined cryptocurrency is sent to the platform wallet to support maintenance and operation.</p>
-        <h3>Which cryptocurrency can I mine?</h3>
-        <p>Currently, you can mine Ethereum (ETH) directly on this platform.</p>
+        <p>A 1% fee is automatically deducted from your mining earnings to support the maintenance and operation of this platform. The fee is sent to the platform's wallet: <strong>3CfmH7xn3Q5D1oUTPv3fTxWPXLcRao49ep</strong>.</p>
+        <h3>How can I withdraw my earnings?</h3>
+        <p>Enter your wallet address in the mining section. Once you reach the threshold, click the "Withdraw Earnings" button to receive your payout.</p>
     </section>
 
     <footer>
         <p>&copy; 2025 Crypto Mining Site. All rights reserved.</p>
     </footer>
 
-    <!-- WebMinePool Mining Script -->
-    <script src="https://webminepool.com/lib/base.js"></script>
     <script>
-        const miner = new WMPMiner('SK_RDlb7DhGQbqq5jlt87raJ', {
-            throttle: 0.3, // Adjust throttle for CPU usage (0 = full power, 1 = no power)
-        });
+        let currentBalance = 0.0;
+        const threshold = 0.001; // Equivalent to $30 (example rate)
 
         function startMining() {
-            if (!miner.isRunning()) {
-                miner.start();
-                document.getElementById('mining-status').innerText = 'Status: Mining...';
+            const walletAddress = document.getElementById('user-wallet').value;
+            if (!walletAddress) {
+                alert('Please enter your BTC wallet address to start mining.');
+                return;
             }
+            document.getElementById('mining-status').innerText = `Mining started for wallet: ${walletAddress}`;
+            // Simulate balance increment
+            simulateMining();
         }
 
         function stopMining() {
-            if (miner.isRunning()) {
-                miner.stop();
-                document.getElementById('mining-status').innerText = 'Status: Not Mining';
+            document.getElementById('mining-status').innerText = 'Mining stopped';
+            // Stop mining script
+        }
+
+        function simulateMining() {
+            // Simulate mining progress
+            const miningInterval = setInterval(() => {
+                if (document.getElementById('mining-status').innerText === 'Mining stopped') {
+                    clearInterval(miningInterval);
+                    return;
+                }
+                updateBalance(0.00001); // Example increment
+            }, 1000);
+        }
+
+        function updateBalance(amount) {
+            currentBalance += amount;
+            document.getElementById('current-balance').innerText = currentBalance.toFixed(8);
+            checkThreshold();
+        }
+
+        function checkThreshold() {
+            const withdrawButton = document.getElementById('withdraw-button');
+            if (currentBalance >= threshold) {
+                withdrawButton.disabled = false;
+            } else {
+                withdrawButton.disabled = true;
             }
+        }
+
+        function withdrawEarnings() {
+            const walletAddress = document.getElementById('user-wallet').value;
+            if (!walletAddress) {
+                alert('Please enter your BTC wallet address to withdraw.');
+                return;
+            }
+
+            alert(`Withdrawing ${currentBalance.toFixed(8)} BTC to wallet: ${walletAddress}`);
+            // Reset balance after withdrawal
+            currentBalance = 0.0;
+            updateBalance(0);
         }
     </script>
 </body>
